@@ -5,14 +5,12 @@ import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
 
 export default function Layout({ children }) {
-  const { isAuthenticated, verifyLogin } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   React.useEffect(() => {
-    verifyLogin().then((status) => {
-      if (!status) router.replace("/login");
-    });
-  }, []);
+    if (!isAuthenticated) router.replace("/login");
+  }, [isAuthenticated, router]);
 
   return isAuthenticated ? children : null;
 }

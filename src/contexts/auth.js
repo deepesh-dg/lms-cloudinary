@@ -1,12 +1,14 @@
 "use client";
 
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import appwriteClientService from "@/services/appwrite-client";
 
 /** @type {import("react").Context<{isAuthenticated: boolean; user: import("appwrite").Models.User<import("appwrite").Models.Preferences> | null; login: typeof appwriteClientService.login; register: typeof appwriteClientService.register; logout: typeof appwriteClientService.logout; verifyLogin: () => Promise<boolean> }>} */
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const [showChildren, setShowChildren] = useState(false);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -65,11 +67,17 @@ export function AuthProvider({ children }) {
     return false;
   };
 
+  useEffect(() => {
+    verifyLogin().finally(() => {
+      setShowChildren(() => true);
+    });
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{ isAuthenticated, user, login, register, logout, verifyLogin }}
     >
-      {children}
+      {showChildren ? children : null}
     </AuthContext.Provider>
   );
 }
