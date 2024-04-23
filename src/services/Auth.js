@@ -33,7 +33,7 @@ export class AuthService extends AppwriteService {
     try {
       const [user, axiosResponse] = await Promise.all([
         this.account.create(ID.unique(), email, password, name),
-        // A team supports variery of roles which we can define. in this case we are defining "admin", "teacher" and "student" role. we can create users and add the into a team where the have their specific role.
+        // A team supports variery of roles which we can define. in this case we are defining "teacher" and "student" role. we can create users and add the into a team where the have their specific role.
         axios.post("/api/teams", {
           teamId: "lms",
           teamName: "LMS",
