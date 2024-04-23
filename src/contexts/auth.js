@@ -1,68 +1,67 @@
 "use client";
 
 import { createContext, useState, useContext, useEffect } from "react";
-import appwriteClientService from "@/services/appwrite-client";
+import authService from "@/services/Auth";
 
-/** @type {import("react").Context<{isAuthenticated: boolean; user: import("appwrite").Models.User<import("appwrite").Models.Preferences> | null; login: typeof appwriteClientService.login; register: typeof appwriteClientService.register; logout: typeof appwriteClientService.logout; verifyLogin: () => Promise<boolean> }>} */
+/** @type {import("react").Context<{isAuthenticated: boolean; userData: { user: import("appwrite").Models.User<import("appwrite").Models.Preferences>; member: import("appwrite").Models.Membership } | null; login: typeof authService.login; register: typeof authService.register; logout: typeof authService.logout; verifyLogin: () => Promise<boolean> }>} */
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [showChildren, setShowChildren] = useState(false);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  const [userData, setUserData] = useState(null);
 
-  /** @type {typeof appwriteClientService.login} */
+  /** @type {typeof authService.login} */
   const login = async (email, password) => {
-    const loginResponse = await appwriteClientService.login(email, password);
-    const userResponse = await appwriteClientService.getLoggedinUserDetails();
+    const loginResponse = await authService.login(email, password);
+    const accountResponse = await authService.getLoggedinUserDetails();
 
-    if (loginResponse.success && userResponse.success) {
+    if (loginResponse.success && accountResponse.success) {
       setIsAuthenticated(() => true);
-      setUser(() => userResponse.data);
+      setUserData(() => accountResponse.data);
     }
 
     return loginResponse;
   };
 
-  /** @type {typeof appwriteClientService.register} */
+  /** @type {typeof authService.register} */
   const register = async (creds) => {
-    const registerResponse = await appwriteClientService.register(creds);
-    const userResponse = await appwriteClientService.getLoggedinUserDetails();
+    const registerResponse = await authService.register(creds);
+    const accountResponse = await authService.getLoggedinUserDetails();
 
-    if (registerResponse.success && userResponse.success) {
+    if (registerResponse.success && accountResponse.success) {
       setIsAuthenticated(() => true);
-      setUser(() => userResponse.data);
+      setUserData(() => accountResponse.data);
     }
 
     return registerResponse;
   };
 
-  /** @type {typeof appwriteClientService.logout} */
-  const logout = async (email, password) => {
-    const logoutResponse = await appwriteClientService.logout(email, password);
-    const userResponse = await appwriteClientService.getLoggedinUserDetails();
+  /** @type {typeof authService.logout} */
+  const logout = async () => {
+    const logoutResponse = await authService.logout();
 
-    if (logoutResponse.success && userResponse.success) {
+    if (logoutResponse.success) {
       setIsAuthenticated(() => false);
-      setUser(() => null);
+      setUserData(() => null);
     }
 
     return logoutResponse;
   };
 
   const verifyLogin = async () => {
-    const response = await appwriteClientService.getLoggedinUserDetails();
+    const response = await authService.getLoggedinUserDetails();
 
     if (response.success) {
       setIsAuthenticated(() => true);
-      setUser(() => response.data);
+      setUserData(() => response.data);
 
       return true;
     }
 
     setIsAuthenticated(() => false);
-    setUser(() => null);
+    setUserData(() => null);
 
     return false;
   };
@@ -75,7 +74,14 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, login, register, logout, verifyLogin }}
+      value={{
+        isAuthenticated,
+        userData,
+        login,
+        register,
+        logout,
+        verifyLogin,
+      }}
     >
       {showChildren ? children : null}
     </AuthContext.Provider>

@@ -1,26 +1,8 @@
-import conf from "@/conf";
-import { Account, Client, Databases, ID } from "appwrite";
+import { ID } from "appwrite";
+import AppwriteService from "./Appwrite";
+import axios from "axios";
 
-export class AppwriteClientService {
-  /** @type {Client} */
-  client;
-
-  /** @type {Databases} */
-  databases;
-
-  /** @type {Account} */
-  account;
-
-  constructor() {
-    this.client = new Client();
-    this.client
-      .setEndpoint(conf.appwrite.url)
-      .setProject(conf.appwrite.projectId);
-
-    this.databases = new Databases(this.client);
-    this.account = new Account(this.client);
-  }
-
+export class AuthService extends AppwriteService {
   /**
    * @param {string} email
    * @param {string} password
@@ -49,18 +31,28 @@ export class AppwriteClientService {
    */
   async register({ email, password, name, role = "student" }) {
     try {
-      const user = await this.account.create(
-        ID.unique(),
-        email,
-        password,
-        name
-      );
+      const [user, axiosResponse] = await Promise.all([
+        this.account.create(ID.unique(), email, password, name),
+        // A team supports variery of roles which we can define. in this case we are defining "admin", "teacher" and "student" role. we can create users and add the into a team where the have their specific role.
+        axios.post("/api/teams", {
+          teamId: "lms",
+          teamName: "LMS",
+          roles: ["teacher", "student"],
+        }),
+      ]);
+
+      const teamResponse = axiosResponse.data;
+
+      if (!teamResponse.success) throw teamResponse;
+
+      // Adding created user to team
+      const member = await axios.patch("/api/teams", {
+        teamId: teamResponse.data.$id,
+        role: role,
+        userId: user.$id,
+      });
 
       const loginResponse = await this.login(user.email, password);
-
-      await this.account.updatePrefs({
-        role: role,
-      });
 
       return loginResponse;
     } catch (error) {
@@ -74,11 +66,24 @@ export class AppwriteClientService {
   async getLoggedinUserDetails() {
     try {
       const user = await this.account.get();
+      const axiosResponse = await axios.get("/api/teams", {
+        params: {
+          teamId: "lms",
+          userId: user.$id,
+        },
+      });
+
+      const membershipResponse = axiosResponse.data;
+
+      if (!membershipResponse.success) throw membershipResponse;
 
       return {
         success: true,
         msg: "Account fetching successfully",
-        data: user,
+        data: {
+          user: user,
+          member: membershipResponse.data,
+        },
       };
     } catch (error) {
       return {
@@ -106,6 +111,6 @@ export class AppwriteClientService {
   }
 }
 
-const appwriteClientService = new AppwriteClientService();
+const authService = new AuthService();
 
-export default appwriteClientService;
+export default authService;

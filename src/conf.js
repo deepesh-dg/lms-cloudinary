@@ -9,6 +9,7 @@ const conf = {
     chaptersCollectionId: String(
       process.env.NEXT_PUBLIC_APPWRITE_CHAPTERS_COLLECTION_ID
     ),
+    apiKey: String(process.env.APPWRITE_API_KEY),
   },
 };
 
