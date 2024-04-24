@@ -1,11 +1,12 @@
 import conf from "@/conf";
-import AppwriteService from "./Appwrite";
+import { databases } from "./config/appwrite";
 import { Query } from "appwrite";
+import axios from "axios";
 
-export class CoursesService extends AppwriteService {
-  async getAllCourses(queries = []) {
+export default class CoursesService {
+  static async getAllCourses(queries = []) {
     try {
-      const documents = await this.databases.listDocuments(
+      const documents = await databases.listDocuments(
         conf.appwrite.databaseId,
         conf.appwrite.coursesColectionId,
         queries
@@ -13,48 +14,78 @@ export class CoursesService extends AppwriteService {
 
       return {
         success: true,
-        msg: "Courses fetched successfully",
         data: documents,
       };
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Error fetching courses",
+        message: String(error?.message) || "Error fetching courses",
       };
     }
   }
 
-  async getCourse(courseId) {
+  static async getCourse(courseId) {
     try {
       const [document, chapters] = await Promise.all([
-        this.databases.getDocument(
+        databases.getDocument(
           conf.appwrite.databaseId,
           conf.appwrite.coursesColectionId,
           courseId
         ),
-        this.databases.listDocuments(
+        databases.listDocuments(
           conf.appwrite.databaseId,
           conf.appwrite.chaptersCollectionId,
           [Query.equal("courses", courseId)]
         ),
       ]);
 
-      document.chapters = chapters;
-
       return {
         success: true,
-        msg: "Courses fetched successfully",
-        data: document,
+        data: { ...document, chapters },
       };
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Error fetching course",
+        message: String(error?.message) || "Error fetching course",
+      };
+    }
+  }
+
+  /**
+   * @param {string} title
+   * @param {string} price
+   * @param {File} thumbnail
+   */
+  static async createCourse(title, price, thumbnail) {
+    try {
+      const formData = axios.toFormData({ title, price, thumbnail });
+
+      const response = await axios.post("/api/courses", formData);
+
+      return response.data;
+    } catch (error) {
+      return {
+        success: false,
+        message: String(error?.message) || "Error creating course",
+      };
+    }
+  }
+
+  /**
+   * @param {{ title: string; number: number; courseId: string; videos: File[] }} chapterData
+   */
+  static async createChapter(chapterData) {
+    try {
+      const formData = axios.toFormData(chapterData);
+
+      const response = await axios.post("/api/chapters", formData);
+
+      return response.data;
+    } catch (error) {
+      return {
+        success: false,
+        message: String(error?.message) || "Error creating chapter",
       };
     }
   }
 }
-
-const coursesService = new CoursesService();
-
-export default coursesService;

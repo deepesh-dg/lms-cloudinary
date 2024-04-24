@@ -26,23 +26,23 @@ import Link from "next/link";
 export default function Page() {
   const { register } = useAuth();
 
+  const [loader, setLoader] = useState(false);
   const [data, setData] = React.useState({
     name: "",
     email: "",
     role: "student",
     password: "",
-    loader: false,
   });
 
   const submit = async (e) => {
-    setData((prev) => ({ ...prev, loader: true }));
+    setLoader(() => true);
     e.preventDefault();
 
     const { success, msg } = await register(data);
 
     if (!success) window.alert(msg);
 
-    setData((prev) => ({ ...prev, loader: false }));
+    setLoader(() => false);
   };
 
   return (
@@ -110,7 +110,7 @@ export default function Page() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-y-4">
-          <Button type="submit" className="w-full" disabled={data.loader}>
+          <Button type="submit" className="w-full" disabled={loader}>
             Sign up
           </Button>
           <p>

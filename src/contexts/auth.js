@@ -1,9 +1,9 @@
 "use client";
 
 import { createContext, useState, useContext, useEffect } from "react";
-import authService from "@/services/Auth";
+import AuthService from "@/services/auth";
 
-/** @type {import("react").Context<{isAuthenticated: boolean; userData: { user: import("appwrite").Models.User<import("appwrite").Models.Preferences>; member: import("appwrite").Models.Membership } | null; login: typeof authService.login; register: typeof authService.register; logout: typeof authService.logout; verifyLogin: () => Promise<boolean> }>} */
+/** @type {import("react").Context<{isAuthenticated: boolean; userData: { user: import("appwrite").Models.User<import("appwrite").Models.Preferences>; member: import("appwrite").Models.Membership } | null; login: typeof AuthService.login; register: typeof AuthService.register; logout: typeof AuthService.logout; verifyLogin: () => Promise<boolean> }>} */
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -12,10 +12,10 @@ export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
 
-  /** @type {typeof authService.login} */
+  /** @type {typeof AuthService.login} */
   const login = async (email, password) => {
-    const loginResponse = await authService.login(email, password);
-    const accountResponse = await authService.getLoggedinUserDetails();
+    const loginResponse = await AuthService.login(email, password);
+    const accountResponse = await AuthService.getLoggedinUserDetails();
 
     if (loginResponse.success && accountResponse.success) {
       setIsAuthenticated(() => true);
@@ -25,10 +25,10 @@ export function AuthProvider({ children }) {
     return loginResponse;
   };
 
-  /** @type {typeof authService.register} */
+  /** @type {typeof AuthService.register} */
   const register = async (creds) => {
-    const registerResponse = await authService.register(creds);
-    const accountResponse = await authService.getLoggedinUserDetails();
+    const registerResponse = await AuthService.register(creds);
+    const accountResponse = await AuthService.getLoggedinUserDetails();
 
     if (registerResponse.success && accountResponse.success) {
       setIsAuthenticated(() => true);
@@ -38,9 +38,9 @@ export function AuthProvider({ children }) {
     return registerResponse;
   };
 
-  /** @type {typeof authService.logout} */
+  /** @type {typeof AuthService.logout} */
   const logout = async () => {
-    const logoutResponse = await authService.logout();
+    const logoutResponse = await AuthService.logout();
 
     if (logoutResponse.success) {
       setIsAuthenticated(() => false);
@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
   };
 
   const verifyLogin = async () => {
-    const response = await authService.getLoggedinUserDetails();
+    const response = await AuthService.getLoggedinUserDetails();
 
     if (response.success) {
       setIsAuthenticated(() => true);

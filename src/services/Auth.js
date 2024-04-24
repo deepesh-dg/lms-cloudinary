@@ -1,27 +1,23 @@
 import { ID } from "appwrite";
-import AppwriteService from "./Appwrite";
+import { account } from "./config/appwrite";
 import axios from "axios";
 
-export class AuthService extends AppwriteService {
+export default class AuthService {
   /**
    * @param {string} email
    * @param {string} password
    */
-  async login(email, password) {
+  static async login(email, password) {
     try {
-      const session = await this.account.createEmailPasswordSession(
-        email,
-        password
-      );
+      const session = await account.createEmailPasswordSession(email, password);
       return {
         success: true,
-        msg: "Logged in successfully...",
         data: session,
       };
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Login failed...",
+        message: String(error?.message) || "Login failed...",
       };
     }
   }
@@ -29,10 +25,10 @@ export class AuthService extends AppwriteService {
   /**
    * @param { { email: string; password: string; name?: string; role?: "teacher" | "student" } } param0
    */
-  async register({ email, password, name, role = "student" }) {
+  static async register({ email, password, name, role = "student" }) {
     try {
       const [user, axiosResponse] = await Promise.all([
-        this.account.create(ID.unique(), email, password, name),
+        account.create(ID.unique(), email, password, name),
         // A team supports variery of roles which we can define. in this case we are defining "teacher" and "student" role. we can create users and add the into a team where the have their specific role.
         axios.post("/api/teams", {
           teamId: "lms",
@@ -43,7 +39,7 @@ export class AuthService extends AppwriteService {
 
       const teamResponse = axiosResponse.data;
 
-      if (!teamResponse.success) throw teamResponse;
+      if (!teamResponse.success) throw new Error(teamResponse.message);
 
       // Adding created user to team
       const member = await axios.patch("/api/teams", {
@@ -58,14 +54,14 @@ export class AuthService extends AppwriteService {
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Register failed...",
+        message: String(error?.message) || "Register failed...",
       };
     }
   }
 
-  async getLoggedinUserDetails() {
+  static async getLoggedinUserDetails() {
     try {
-      const user = await this.account.get();
+      const user = await account.get();
       const axiosResponse = await axios.get("/api/teams", {
         params: {
           teamId: "lms",
@@ -75,11 +71,12 @@ export class AuthService extends AppwriteService {
 
       const membershipResponse = axiosResponse.data;
 
-      if (!membershipResponse.success) throw membershipResponse;
+      if (!membershipResponse.success)
+        throw new Error(membershipResponse.message);
 
       return {
         success: true,
-        msg: "Account fetching successfully",
+        message: "Account fetching successfully",
         data: {
           user: user,
           member: membershipResponse.data,
@@ -88,29 +85,25 @@ export class AuthService extends AppwriteService {
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Error fetching details...",
+        message: String(error?.message) || "Error fetching details...",
       };
     }
   }
 
-  async logout() {
+  static async logout() {
     try {
-      const data = await this.account.deleteSessions();
+      const data = await account.deleteSessions();
 
       return {
         success: true,
-        msg: "Logged out successfully",
+        message: "Logged out successfully",
         data: data,
       };
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Logout failed...",
+        message: String(error?.message) || "Logout failed...",
       };
     }
   }
 }
-
-const authService = new AuthService();
-
-export default authService;

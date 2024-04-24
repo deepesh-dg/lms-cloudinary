@@ -1,22 +1,21 @@
-import AppwriteServerService from "./AppwriteServer";
+import { teams } from "./config/node-appwrite";
 
-export class TeamServerService extends AppwriteServerService {
+export default class TeamService {
   /**
    * @param {string} teamId
    */
-  async getTeam(teamId) {
+  static async getTeam(teamId) {
     try {
-      const team = await this.teams.get(teamId);
+      const team = await teams.get(teamId);
 
       return {
         success: true,
-        msg: "Team Fetched Successfully",
         data: team,
       };
     } catch (error) {
       return {
         success: true,
-        msg: String(error?.message) || "Error fetching team detail...",
+        message: String(error?.message) || "Error fetching team detail...",
       };
     }
   }
@@ -26,23 +25,22 @@ export class TeamServerService extends AppwriteServerService {
    * @param {string} teamName
    * @param {string[]} roles
    */
-  async createTeam(teamId, teamName, roles = []) {
+  static async getOrCreateTeam(teamId, teamName, roles = []) {
     const teamResponse = await this.getTeam(teamId);
 
     if (teamResponse.success) return teamResponse;
 
     try {
-      const team = await this.teams.create(teamId, teamName, roles);
+      const team = await teams.create(teamId, teamName, roles);
 
       return {
         success: true,
-        msg: "Team created successfully",
         data: team,
       };
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Error creating team...",
+        message: String(error?.message) || "Error creating team...",
       };
     }
   }
@@ -52,9 +50,9 @@ export class TeamServerService extends AppwriteServerService {
    * @param {string[]} roles
    * @param {string} userId
    */
-  async createMembership(teamId, roles, userId) {
+  static async createMembership(teamId, roles, userId) {
     try {
-      const member = await this.teams.createMembership(
+      const member = await teams.createMembership(
         teamId,
         roles,
         undefined, // email to be added when there is no user, appwrite will create new user
@@ -63,20 +61,19 @@ export class TeamServerService extends AppwriteServerService {
 
       return {
         success: true,
-        msg: "Member added successfully",
         data: member,
       };
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Error adding member...",
+        message: String(error?.message) || "Error adding member...",
       };
     }
   }
 
-  async getMembership(teamId, userId) {
+  static async getMembership(teamId, userId) {
     try {
-      const { total, memberships } = await this.teams.listMemberships(
+      const { total, memberships } = await teams.listMemberships(
         teamId,
         [],
         userId
@@ -86,18 +83,13 @@ export class TeamServerService extends AppwriteServerService {
 
       return {
         success: true,
-        msg: "Found",
         data: memberships[0],
       };
     } catch (error) {
       return {
         success: false,
-        msg: String(error?.message) || "Error fetching member...",
+        message: String(error?.message) || "Error fetching member...",
       };
     }
   }
 }
-
-const teamServerService = new TeamServerService();
-
-export default teamServerService;

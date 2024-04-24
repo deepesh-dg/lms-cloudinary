@@ -1,4 +1,4 @@
-import teamServerService from "@/services/TeamServer";
+import TeamService from "@/services/team.server";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -11,7 +11,7 @@ export async function GET(request) {
   const teamId = searchParams.get("teamId");
   const userId = searchParams.get("userId");
 
-  const response = await teamServerService.getMembership(teamId, userId);
+  const response = await TeamService.getMembership(teamId, userId);
 
   return NextResponse.json(response);
 }
@@ -23,7 +23,7 @@ export async function GET(request) {
 export async function POST(request) {
   const { teamId, teamName, roles = [] } = await request.json();
 
-  const response = await teamServerService.createTeam(teamId, teamName, roles);
+  const response = await TeamService.getOrCreateTeam(teamId, teamName, roles);
 
   return NextResponse.json(response);
 }
@@ -35,11 +35,7 @@ export async function POST(request) {
 export async function PATCH(request) {
   const { teamId, userId, role } = await request.json();
 
-  const response = await teamServerService.createMembership(
-    teamId,
-    [role],
-    userId
-  );
+  const response = await TeamService.createMembership(teamId, [role], userId);
 
   return NextResponse.json(response);
 }
