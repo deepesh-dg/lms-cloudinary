@@ -56,4 +56,14 @@ async function uploadVideo(video) {
   return result;
 }
 
-export { cloudinary, uploadImage, uploadVideo };
+/**
+ * @param {string} imgUrl
+ * @param {string} public_id
+ */
+async function replaceImage(imgUrl, public_id) {
+  const result = await cloudinary.uploader.upload(imgUrl, { public_id });
+
+  return result;
+}
+
+export { cloudinary, uploadImage, uploadVideo, replaceImage };

@@ -18,12 +18,12 @@ export default function CourseDetails({ course }) {
             >
               <h2 className="text-xl font-semibold">{chapter.title}</h2>
               <div className="grid grid-cols-2 gap-4">
-                {chapter.videos.map((videoPublicId) => (
-                  <div className="block" key={videoPublicId}>
+                {chapter.videos.map((video) => (
+                  <div className="block" key={video.public_id}>
                     <CldVideoPlayer
-                      width="1920"
-                      height="1080"
-                      src={videoPublicId}
+                      width={video.width}
+                      height={video.height}
+                      src={video.public_id}
                     />
                   </div>
                 ))}

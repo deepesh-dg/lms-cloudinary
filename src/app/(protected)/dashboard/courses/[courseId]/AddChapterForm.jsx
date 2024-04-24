@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import CoursesService from "@/services/courses";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 export default function AddChapterForm({ onCreate, chapterNumber }) {
   const [loader, setLoader] = useState(false);
@@ -14,6 +14,7 @@ export default function AddChapterForm({ onCreate, chapterNumber }) {
     videos: [],
   });
   const { courseId } = useParams();
+  const videosRef = useRef(null);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -26,11 +27,18 @@ export default function AddChapterForm({ onCreate, chapterNumber }) {
       videos: formData.videos,
     });
 
-    if (response.success) onCreate(response.data);
+    if (response.success) {
+      onCreate(response.data);
+      setFormData(() => ({
+        title: "",
+        videos: [],
+      }));
+      if (videosRef.current) videosRef.current.value = "";
+    }
 
     if (!response.success)
       toast({
-        varient: "destructive",
+        variant: "destructive",
         title: "Error creating chapter",
         description: response.message,
       });
@@ -58,9 +66,10 @@ export default function AddChapterForm({ onCreate, chapterNumber }) {
             videos: Array.from(e.target.files),
           }))
         }
+        ref={videosRef}
       />
       <Button type="submit" disabled={loader}>
-        Create Chapter
+        Add Chapter
       </Button>
     </form>
   );

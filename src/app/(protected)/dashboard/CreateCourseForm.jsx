@@ -2,16 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import CoursesService from "@/services/courses";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 export default function CreateCourseForm({ onCreate }) {
+  const { toast } = useToast();
   const [loader, setLoader] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     price: "",
     thumbnail: null,
   });
+
+  const thumbnailRef = useRef(null);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -23,11 +27,22 @@ export default function CreateCourseForm({ onCreate }) {
       formData.thumbnail
     );
 
-    if (response.success) onCreate(response.data);
+    if (response.success) {
+      onCreate(response.data);
+      setFormData(() => ({
+        title: "",
+        price: "",
+        thumbnail: null,
+      }));
+
+      if (thumbnailRef.current) {
+        thumbnailRef.current.value = "";
+      }
+    }
 
     if (!response.success)
       toast({
-        varient: "destructive",
+        variant: "destructive",
         title: "Error creating course",
         description: response.message,
       });
@@ -59,6 +74,7 @@ export default function CreateCourseForm({ onCreate }) {
         onChange={(e) =>
           setFormData((prev) => ({ ...prev, thumbnail: e.target.files[0] }))
         }
+        ref={thumbnailRef}
       />
       <Button type="submit" disabled={loader}>
         Create Course

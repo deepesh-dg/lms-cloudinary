@@ -12,8 +12,10 @@ export default class CoursesService {
         conf.appwrite.databaseId,
         conf.appwrite.coursesColectionId,
         ID.unique(),
-        { title, price: Number(price), thumbnail: result.public_id }
+        { title, price: Number(price), thumbnail: JSON.stringify(result) }
       );
+
+      course.thumbnail = JSON.parse(course.thumbnail);
 
       return {
         success: true,
@@ -36,14 +38,16 @@ export default class CoursesService {
 
       const videoResults = await Promise.all(cloudinaryPromises);
 
-      const videoPublicIds = videoResults.map((res) => res.public_id);
+      const videos = videoResults.map((res) => JSON.stringify(res));
 
       const chapter = await databases.createDocument(
         conf.appwrite.databaseId,
         conf.appwrite.chaptersCollectionId,
         ID.unique(),
-        { ...chapterData, videos: videoPublicIds }
+        { ...chapterData, videos: videos }
       );
+
+      chapter.videos = chapter.videos.map(JSON.parse);
 
       return {
         success: true,

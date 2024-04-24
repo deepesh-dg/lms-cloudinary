@@ -12,6 +12,11 @@ export default class CoursesService {
         queries
       );
 
+      documents.documents = documents.documents.map((doc) => ({
+        ...doc,
+        thumbnail: JSON.parse(doc.thumbnail),
+      }));
+
       return {
         success: true,
         data: documents,
@@ -38,6 +43,13 @@ export default class CoursesService {
           [Query.equal("courseId", courseId)]
         ),
       ]);
+
+      document.thumbnail = JSON.parse(document.thumbnail);
+
+      chapters.documents = chapters.documents.map((doc) => ({
+        ...doc,
+        videos: doc.videos.map(JSON.parse),
+      }));
 
       return {
         success: true,
