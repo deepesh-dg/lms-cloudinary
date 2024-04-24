@@ -28,7 +28,7 @@ export default function CreateCourseForm({ onCreate }) {
   };
 
   return (
-    <form className="flex gap-4 w-full" onSubmit={submit}>
+    <form className="flex gap-4 w-full p-4 bg-gray-100" onSubmit={submit}>
       <Input
         type="text"
         placeholder="Course Title"

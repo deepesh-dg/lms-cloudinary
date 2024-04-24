@@ -3,6 +3,8 @@
 import CoursesService from "@/services/courses";
 import React, { useEffect, useState } from "react";
 import CreateCourseForm from "./CreateCourseForm";
+import Link from "next/link";
+import CourseCard from "@/components/CourseCard";
 
 export default function Page() {
   const [courses, setCourses] = useState([]);
@@ -19,9 +21,11 @@ export default function Page() {
         <CreateCourseForm
           onCreate={(course) => setCourses((prev) => [course, ...prev])}
         />
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           {courses.map((course) => (
-            <div key={course.$id}></div>
+            <Link key={course.$id} href={`/dashboard/courses/${course.$id}`}>
+              <CourseCard course={course} />
+            </Link>
           ))}
         </div>
       </div>
