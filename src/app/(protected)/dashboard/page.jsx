@@ -19,7 +19,7 @@ export default function Page() {
     <main className="block">
       <div className="w-full max-w-7xl mx-auto px-4 space-y-8 py-12">
         <CreateCourseForm
-          onCreate={(course) => setCourses((prev) => [course, ...prev])}
+          onCreate={(course) => setCourses((prev) => [...prev, course])}
         />
         <div className="grid grid-cols-4 gap-4">
           {courses.map((course) => (

@@ -9,33 +9,51 @@ cloudinary.config({
 
 /**
  * @param {Uint8Array} buffer
+ * @param {"image" | "video"} resource_type
  * @returns {Promise<import("cloudinary").UploadApiResponse>}
  */
-function uploadBuffer(buffer) {
+function uploadBuffer(buffer, resource_type = "image") {
   return new Promise((resolve, reject) => {
     cloudinary.uploader
-      .upload_stream({}, (error, result) => {
-        if (error) {
-          reject(error);
-          return;
-        }
+      .upload_stream(
+        {
+          resource_type,
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+            return;
+          }
 
-        resolve(result);
-      })
+          resolve(result);
+        }
+      )
       .end(buffer);
   });
 }
 
 /**
- * @param {File} file
+ * @param {File} image
  */
-async function uploadFile(file) {
-  const arrayBuffer = await file.arrayBuffer();
+async function uploadImage(image) {
+  const arrayBuffer = await image.arrayBuffer();
   const buffer = new Uint8Array(arrayBuffer);
 
-  const result = await uploadBuffer(buffer);
+  const result = await uploadBuffer(buffer, "image");
 
   return result;
 }
 
-export { cloudinary, uploadFile };
+/**
+ * @param {File} video
+ */
+async function uploadVideo(video) {
+  const arrayBuffer = await video.arrayBuffer();
+  const buffer = new Uint8Array(arrayBuffer);
+
+  const result = await uploadBuffer(buffer, "video");
+
+  return result;
+}
+
+export { cloudinary, uploadImage, uploadVideo };

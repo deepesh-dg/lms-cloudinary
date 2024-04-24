@@ -1,6 +1,8 @@
 "use client";
 
+import CourseCard from "@/components/CourseCard";
 import CoursesService from "@/services/courses";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -25,7 +27,13 @@ export default function Home() {
       </section>
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4">
-          {courses.map((course) => {})}
+          <div className="grid grid-cols-4 gap-4">
+            {courses.map((course) => (
+              <Link key={course.$id} href={`/courses/${course.$id}`}>
+                <CourseCard course={course} />
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
     </main>

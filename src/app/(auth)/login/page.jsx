@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,8 +18,9 @@ import Link from "next/link";
 
 export default function Page() {
   const { login } = useAuth();
+  const { toast } = useToast();
 
-  const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = React.useState(false);
   const [data, setData] = React.useState({
     email: "",
     password: "",
@@ -29,9 +30,14 @@ export default function Page() {
     setLoader(() => true);
     e.preventDefault();
 
-    const { success, msg } = await login(data.email, data.password);
+    const { success, message } = await login(data.email, data.password);
 
-    if (!success) window.alert(msg);
+    if (!success)
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: message,
+      });
 
     setLoader(() => false);
   };

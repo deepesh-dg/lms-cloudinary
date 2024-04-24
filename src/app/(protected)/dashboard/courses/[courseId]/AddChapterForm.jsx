@@ -2,33 +2,36 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
 import CoursesService from "@/services/courses";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
-export default function CreateCourseForm({ onCreate }) {
+export default function AddChapterForm({ onCreate, chapterNumber }) {
   const [loader, setLoader] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
-    price: "",
-    thumbnail: null,
+    videos: [],
   });
+  const { courseId } = useParams();
 
   const submit = async (e) => {
     e.preventDefault();
     setLoader(() => true);
 
-    const response = await CoursesService.createCourse(
-      formData.title,
-      formData.price,
-      formData.thumbnail
-    );
+    const response = await CoursesService.createChapter({
+      title: formData.title,
+      number: chapterNumber,
+      courseId: courseId,
+      videos: formData.videos,
+    });
 
     if (response.success) onCreate(response.data);
 
     if (!response.success)
       toast({
         varient: "destructive",
-        title: "Error creating course",
+        title: "Error creating chapter",
         description: response.message,
       });
 
@@ -39,29 +42,25 @@ export default function CreateCourseForm({ onCreate }) {
     <form className="flex gap-4 w-full p-4 bg-gray-100" onSubmit={submit}>
       <Input
         type="text"
-        placeholder="Course Title"
+        placeholder="Chapter Title"
         value={formData.title}
         onChange={(e) =>
           setFormData((prev) => ({ ...prev, title: e.target.value }))
         }
       />
       <Input
-        type="number"
-        placeholder="Course Price"
-        value={formData.price}
-        onChange={(e) =>
-          setFormData((prev) => ({ ...prev, price: e.target.value }))
-        }
-      />
-      <Input
         type="file"
-        placeholder="Course Thumbnail"
+        placeholder="Chapter Videos"
+        multiple
         onChange={(e) =>
-          setFormData((prev) => ({ ...prev, thumbnail: e.target.files[0] }))
+          setFormData((prev) => ({
+            ...prev,
+            videos: Array.from(e.target.files),
+          }))
         }
       />
       <Button type="submit" disabled={loader}>
-        Create Course
+        Create Chapter
       </Button>
     </form>
   );

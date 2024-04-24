@@ -1,12 +1,12 @@
 import conf from "@/conf";
 import { databases } from "./config/node-appwrite";
-import { uploadFile } from "./config/cloudinary";
+import { uploadImage, uploadVideo } from "./config/cloudinary";
 import { ID } from "node-appwrite";
 
 export default class CoursesService {
   static async createCourse(title, price, thumbnail) {
     try {
-      const result = await uploadFile(thumbnail);
+      const result = await uploadImage(thumbnail);
 
       const course = await databases.createDocument(
         conf.appwrite.databaseId,
@@ -32,11 +32,11 @@ export default class CoursesService {
    */
   static async createChapter(chapterData) {
     try {
-      const cloudinaryPromises = chapterData.videos.map(uploadFile);
+      const cloudinaryPromises = chapterData.videos.map(uploadVideo);
 
       const videoResults = await Promise.all(cloudinaryPromises);
 
-      const videoPublicIds = videoResults.map((res) => res.data.public_id);
+      const videoPublicIds = videoResults.map((res) => res.public_id);
 
       const chapter = await databases.createDocument(
         conf.appwrite.databaseId,

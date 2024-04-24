@@ -9,7 +9,7 @@ export default class AuthService {
    */
   static async login(email, password) {
     try {
-      const session = await account.createEmailPasswordSession(email, password);
+      const session = await account.createEmailSession(email, password);
       return {
         success: true,
         data: session,

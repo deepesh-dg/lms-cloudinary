@@ -10,7 +10,7 @@ export async function POST(request) {
   const title = formData.get("title");
   const number = formData.get("number");
   const courseId = formData.get("courseId");
-  const videos = formData.get("videos");
+  const videos = formData.getAll("videos[]");
 
   const response = await CoursesService.createChapter({
     title,

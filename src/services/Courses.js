@@ -35,7 +35,7 @@ export default class CoursesService {
         databases.listDocuments(
           conf.appwrite.databaseId,
           conf.appwrite.chaptersCollectionId,
-          [Query.equal("courses", courseId)]
+          [Query.equal("courseId", courseId)]
         ),
       ]);
 
@@ -82,6 +82,7 @@ export default class CoursesService {
 
       return response.data;
     } catch (error) {
+      console.log({ error });
       return {
         success: false,
         message: String(error?.message) || "Error creating chapter",
