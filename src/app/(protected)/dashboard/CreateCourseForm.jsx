@@ -71,6 +71,7 @@ export default function CreateCourseForm({ onCreate }) {
       <Input
         type="file"
         placeholder="Course Thumbnail"
+        accept="image/jpg, image/jpeg, image/png, image/webp"
         onChange={(e) =>
           setFormData((prev) => ({ ...prev, thumbnail: e.target.files[0] }))
         }

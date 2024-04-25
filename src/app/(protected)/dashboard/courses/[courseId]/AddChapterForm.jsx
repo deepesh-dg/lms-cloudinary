@@ -59,6 +59,7 @@ export default function AddChapterForm({ onCreate, chapterNumber }) {
       <Input
         type="file"
         placeholder="Chapter Videos"
+        accept="video/mp4, video/wmv, video/mkv, video/webm"
         multiple
         onChange={(e) =>
           setFormData((prev) => ({
