@@ -24,6 +24,19 @@ export default function CourseDetails({ course }) {
                       width={video.width}
                       height={video.height}
                       src={video.public_id}
+                      colors={{
+                        base: "#000000",
+                        text: "#ffffff",
+                        accent: "#ff0000",
+                      }}
+                      transformation={{
+                        overlay: "e8b9jf8kwakrpi5atdqb", // image public id (mario image)
+                        width: 150,
+                        gravity: "south_east",
+                        x: 50,
+                        y: 50,
+                        opacity: 80,
+                      }}
                     />
                   </div>
                 ))}
