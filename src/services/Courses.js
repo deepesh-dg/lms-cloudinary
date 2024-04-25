@@ -83,10 +83,11 @@ export default class CoursesService {
     }
   }
 
-  static async updateThumbnail(url, courseId) {
+  static async updateThumbnail(url, publicId, courseId) {
     try {
       const result = await axios.patch("/api/courses", {
         url,
+        publicId,
         courseId,
       });
 

@@ -21,9 +21,13 @@ export async function POST(request) {
  * @param {NextRequest} request
  */
 export async function PATCH(request) {
-  const { url, courseId } = await request.json();
+  const { url, publicId, courseId } = await request.json();
 
-  const response = await CoursesService.updateThumbnail(url, courseId);
+  const response = await CoursesService.updateThumbnail(
+    url,
+    publicId,
+    courseId
+  );
 
   return NextResponse.json(response);
 }

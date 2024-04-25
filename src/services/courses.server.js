@@ -80,13 +80,15 @@ export default class CoursesService {
     }
   }
 
-  static async updateThumbnail(url, courseId) {
+  static async updateThumbnail(url, public_id, courseId) {
     try {
       // For cloudinary to process the image in background so that next time it is readily available for downloading and uploading image in line no. 88
       await fetch(url);
 
-      // We can pass old public_id in upload options but it won't make effect immediately due to browser url cache since url will be the same.
-      const result = await cloudinary.uploader.upload(url);
+      const result = await cloudinary.uploader.upload(url, {
+        public_id, // to replace image with same public_id
+        invalidate: true, // to clear cdn cache
+      });
 
       const document = await databases.updateDocument(
         conf.appwrite.databaseId,

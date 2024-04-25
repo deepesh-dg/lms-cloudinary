@@ -7,6 +7,7 @@ import React, { useState } from "react";
 
 export default function UpdateThumbnail({ image: _image }) {
   const [image, setImage] = useState(_image);
+  const [version, setVersion] = useState(Date.now());
   const [loader, setLoader] = useState(false);
   const [transformation, setTransformation] = useState({
     restore: false,
@@ -26,7 +27,11 @@ export default function UpdateThumbnail({ image: _image }) {
       ...transformation,
     });
 
-    const result = await CoursesService.updateThumbnail(url, courseId);
+    const result = await CoursesService.updateThumbnail(
+      url,
+      image.public_id,
+      courseId
+    );
 
     if (!result.success)
       toast({
@@ -42,6 +47,7 @@ export default function UpdateThumbnail({ image: _image }) {
         removeBackground: false,
       }));
       setImage(() => result.data.thumbnail);
+      setVersion(() => Date.now());
     }
 
     setLoader(() => false);
@@ -57,6 +63,7 @@ export default function UpdateThumbnail({ image: _image }) {
           src={image.public_id}
           alt="image"
           className="w-1/2 block shrink-0"
+          version={version}
           {...transformation}
         />
         <div className="flex flex-wrap gap-4 w-full">
