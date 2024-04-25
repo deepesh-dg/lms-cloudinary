@@ -32,38 +32,4 @@ function uploadBuffer(buffer, resource_type = "image") {
   });
 }
 
-/**
- * @param {File} image
- */
-async function uploadImage(image) {
-  const arrayBuffer = await image.arrayBuffer();
-  const buffer = new Uint8Array(arrayBuffer);
-
-  const result = await uploadBuffer(buffer, "image");
-
-  return result;
-}
-
-/**
- * @param {File} video
- */
-async function uploadVideo(video) {
-  const arrayBuffer = await video.arrayBuffer();
-  const buffer = new Uint8Array(arrayBuffer);
-
-  const result = await uploadBuffer(buffer, "video");
-
-  return result;
-}
-
-/**
- * @param {string} imgUrl
- * @param {string} public_id
- */
-async function replaceImage(imgUrl, public_id) {
-  const result = await cloudinary.uploader.upload(imgUrl, { public_id });
-
-  return result;
-}
-
-export { cloudinary, uploadImage, uploadVideo, replaceImage };
+export { cloudinary, uploadBuffer };

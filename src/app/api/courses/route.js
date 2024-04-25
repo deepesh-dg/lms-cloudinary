@@ -15,3 +15,15 @@ export async function POST(request) {
 
   return NextResponse.json(response);
 }
+
+/**
+ * replace thumbnail
+ * @param {NextRequest} request
+ */
+export async function PATCH(request) {
+  const { url, courseId } = await request.json();
+
+  const response = await CoursesService.updateThumbnail(url, courseId);
+
+  return NextResponse.json(response);
+}

@@ -4,7 +4,7 @@ import "next-cloudinary/dist/cld-video-player.css";
 
 export default function CourseDetails({ course }) {
   return (
-    <div className="rounded-xl bg-gray-100 border border-black/40 p-4">
+    <div className="rounded-xl bg-gray-100 p-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">{course.title}</h1>
         <p className="font-lg">₹ {course.price}</p>

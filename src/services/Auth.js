@@ -17,7 +17,7 @@ export default class AuthService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Login failed...",
+        message: error?.message || "Login failed...",
       };
     }
   }
@@ -54,7 +54,7 @@ export default class AuthService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Register failed...",
+        message: error?.message || "Register failed...",
       };
     }
   }
@@ -85,7 +85,7 @@ export default class AuthService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Error fetching details...",
+        message: error?.message || "Error fetching details...",
       };
     }
   }
@@ -102,7 +102,7 @@ export default class AuthService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Logout failed...",
+        message: error?.message || "Logout failed...",
       };
     }
   }

@@ -15,7 +15,7 @@ export default class TeamService {
     } catch (error) {
       return {
         success: true,
-        message: String(error?.message) || "Error fetching team detail...",
+        message: error?.message || "Error fetching team detail...",
       };
     }
   }
@@ -40,7 +40,7 @@ export default class TeamService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Error creating team...",
+        message: error?.message || "Error creating team...",
       };
     }
   }
@@ -66,7 +66,7 @@ export default class TeamService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Error adding member...",
+        message: error?.message || "Error adding member...",
       };
     }
   }
@@ -88,7 +88,7 @@ export default class TeamService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Error fetching member...",
+        message: error?.message || "Error fetching member...",
       };
     }
   }

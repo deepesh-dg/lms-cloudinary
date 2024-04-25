@@ -24,7 +24,7 @@ export default class CoursesService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Error fetching courses",
+        message: error?.message || "Error fetching courses",
       };
     }
   }
@@ -58,7 +58,7 @@ export default class CoursesService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Error fetching course",
+        message: error?.message || "Error fetching course",
       };
     }
   }
@@ -78,7 +78,23 @@ export default class CoursesService {
     } catch (error) {
       return {
         success: false,
-        message: String(error?.message) || "Error creating course",
+        message: error?.message || "Error creating course",
+      };
+    }
+  }
+
+  static async updateThumbnail(url, courseId) {
+    try {
+      const result = await axios.patch("/api/courses", {
+        url,
+        courseId,
+      });
+
+      return result.data;
+    } catch (error) {
+      return {
+        success: false,
+        message: error?.message || "Error updating thumbnail",
       };
     }
   }
@@ -97,7 +113,7 @@ export default class CoursesService {
       console.log({ error });
       return {
         success: false,
-        message: String(error?.message) || "Error creating chapter",
+        message: error?.message || "Error creating chapter",
       };
     }
   }
