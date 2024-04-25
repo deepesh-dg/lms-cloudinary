@@ -3,7 +3,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import AuthService from "@/services/auth";
 
-/** @type {import("react").Context<{isAuthenticated: boolean; userData: { user: import("appwrite").Models.User<import("appwrite").Models.Preferences>; member: import("appwrite").Models.Membership } | null; login: typeof AuthService.login; register: typeof AuthService.register; logout: typeof AuthService.logout; verifyLogin: () => Promise<boolean> }>} */
+/** @type {import("react").Context<{isAuthenticated: boolean; userData: { user: import("appwrite").Models.User<import("appwrite").Models.Preferences>; member: import("appwrite").Models.Membership } | null; login: typeof AuthService.login; register: typeof AuthService.register; logout: typeof AuthService.logout; }>} */
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -80,7 +80,6 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
-        verifyLogin,
       }}
     >
       {showChildren ? children : null}

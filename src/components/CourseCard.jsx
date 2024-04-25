@@ -10,7 +10,6 @@ export default function CourseCard({ course }) {
         src={course.thumbnail.public_id}
         alt={course.title}
         className="w-full"
-        crop="thumb"
       />
       <div className="space-y-3 p-4">
         <h2 className="font-semibold text-xl">{course.title}</h2>
