@@ -118,4 +118,46 @@ export default class CoursesService {
       };
     }
   }
+
+  static async deleteCourse(courseId) {
+    try {
+      const document = await databases.deleteDocument(
+        conf.appwrite.databaseId,
+        conf.appwrite.coursesColectionId,
+        courseId
+      );
+
+      return {
+        success: true,
+        data: document,
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        success: false,
+        message: error?.message || "Error deleting course",
+      };
+    }
+  }
+
+  static async deleteChapter(chapterId) {
+    try {
+      const document = await databases.deleteDocument(
+        conf.appwrite.databaseId,
+        conf.appwrite.chaptersCollectionId,
+        chapterId
+      );
+
+      return {
+        success: true,
+        data: document,
+      };
+    } catch (error) {
+      console.log({ error });
+      return {
+        success: false,
+        message: error?.message || "Error deleting chapter",
+      };
+    }
+  }
 }

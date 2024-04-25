@@ -15,6 +15,27 @@ export default function Page({ params }) {
     });
   }, [params.courseId]);
 
+  const onChapterDelete = async (chapterId) => {
+    const res = await CoursesService.deleteChapter(chapterId);
+
+    if (!res.success)
+      toast({
+        variant: "destructive",
+        title: "Error deleting chapter",
+        description: res.message,
+      });
+
+    if (res.success) {
+      setCourse((prev) => ({
+        ...prev,
+        chapters: {
+          total: prev.chapters.total - 1,
+          documents: prev.chapters.documents.filter((c) => c.$id !== chapterId),
+        },
+      }));
+    }
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto py-12 space-y-12">
       {course ? <UpdateThumbnail image={course.thumbnail} /> : null}
@@ -34,7 +55,9 @@ export default function Page({ params }) {
           });
         }}
       />
-      {course ? <CourseDetails course={course} /> : null}
+      {course ? (
+        <CourseDetails course={course} onChapterDelete={onChapterDelete} />
+      ) : null}
     </div>
   );
 }

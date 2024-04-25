@@ -22,11 +22,10 @@ import {
 } from "@/components/ui/select";
 import { useAuth } from "@/contexts/auth";
 import Link from "next/link";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Page() {
   const { register } = useAuth();
-  const { toast } = useToast();
 
   const [loader, setLoader] = React.useState(false);
   const [data, setData] = React.useState({

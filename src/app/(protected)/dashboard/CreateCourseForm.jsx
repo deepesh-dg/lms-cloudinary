@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import CoursesService from "@/services/courses";
 import React, { useRef, useState } from "react";
 
 export default function CreateCourseForm({ onCreate }) {
-  const { toast } = useToast();
   const [loader, setLoader] = useState(false);
   const [formData, setFormData] = useState({
     title: "",

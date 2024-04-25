@@ -1,8 +1,9 @@
 import { CldVideoPlayer } from "next-cloudinary";
 import React from "react";
 import "next-cloudinary/dist/cld-video-player.css";
+import { Trash2 } from "lucide-react";
 
-export default function CourseDetails({ course }) {
+export default function CourseDetails({ course, onChapterDelete }) {
   return (
     <div className="rounded-xl bg-gray-100 p-4">
       <div className="flex justify-between items-center">
@@ -13,7 +14,7 @@ export default function CourseDetails({ course }) {
         {course.chapters.documents.map((chapter) => {
           return (
             <div
-              className="block rounded-xl bg-white p-4 space-y-2"
+              className="block rounded-xl bg-white p-4 space-y-2 relative"
               key={chapter.$id}
             >
               <h2 className="text-xl font-semibold">{chapter.title}</h2>
@@ -41,6 +42,16 @@ export default function CourseDetails({ course }) {
                   </div>
                 ))}
               </div>
+              {onChapterDelete && (
+                <button
+                  onClick={() => {
+                    onChapterDelete(chapter.$id);
+                  }}
+                  className="absolute top-2 right-2 p-1 bg-white rounded-full text-red-600 shadow-md"
+                >
+                  <Trash2 />
+                </button>
+              )}
             </div>
           );
         })}

@@ -3,7 +3,7 @@ import React from "react";
 
 export default function CourseCard({ course }) {
   return (
-    <div className="block w-full shadow-md rounded-lg overflow-hidden">
+    <div className="block w-full shadow-md rounded-lg overflow-hidden relative">
       <CldImage
         width={course.thumbnail.width}
         height={course.thumbnail.height}

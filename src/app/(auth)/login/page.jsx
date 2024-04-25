@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +18,6 @@ import Link from "next/link";
 
 export default function Page() {
   const { login } = useAuth();
-  const { toast } = useToast();
 
   const [loader, setLoader] = React.useState(false);
   const [data, setData] = React.useState({
