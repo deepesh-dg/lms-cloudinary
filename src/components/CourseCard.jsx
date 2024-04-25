@@ -9,6 +9,7 @@ export default function CourseCard({ course }) {
         height={course.thumbnail.height}
         src={course.thumbnail.public_id}
         alt={course.title}
+        version={Date.now()}
         className="w-full"
       />
       <div className="space-y-3 p-4">
