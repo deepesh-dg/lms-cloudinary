@@ -61,6 +61,19 @@ export default function UpdateThumbnail({ image: _image }) {
         />
         <div className="flex flex-col">
           <div className="flex flex-wrap gap-4 w-full">
+            <Input
+              value={transformation?.crop?.gravity || ""}
+              placeholder="Focus on specific object"
+              onChange={(e) => {
+                setTransformation((prev) => ({
+                  ...prev,
+                  crop: {
+                    ...prev?.crop,
+                    gravity: e.target.value || "auto", // default auto
+                  },
+                }));
+              }}
+            />
             <Button
               variant={transformation.improve ? "default" : "outline"}
               onClick={() => {
@@ -92,14 +105,12 @@ export default function UpdateThumbnail({ image: _image }) {
               onClick={() => {
                 setTransformation((prev) => ({
                   ...prev,
-                  crop:
-                    prev?.crop?.aspectRatio === "16:9"
-                      ? undefined
-                      : {
-                          aspectRatio: "16:9",
-                          type: "fill",
-                          gravity: "auto", // default
-                        },
+                  crop: {
+                    ...prev?.crop,
+                    aspectRatio:
+                      prev?.crop?.aspectRatio === "16:9" ? undefined : "16:9",
+                    type: "fill",
+                  },
                 }));
               }}
             >
@@ -114,14 +125,12 @@ export default function UpdateThumbnail({ image: _image }) {
               onClick={() => {
                 setTransformation((prev) => ({
                   ...prev,
-                  crop:
-                    prev?.crop?.aspectRatio === "1:1"
-                      ? undefined
-                      : {
-                          aspectRatio: "1:1",
-                          type: "fill",
-                          gravity: "auto", // default
-                        },
+                  crop: {
+                    ...prev?.crop,
+                    aspectRatio:
+                      prev?.crop?.aspectRatio === "1:1" ? undefined : "1:1",
+                    type: "fill",
+                  },
                 }));
               }}
             >
@@ -136,14 +145,12 @@ export default function UpdateThumbnail({ image: _image }) {
               onClick={() => {
                 setTransformation((prev) => ({
                   ...prev,
-                  crop:
-                    prev?.crop?.aspectRatio === "4:3"
-                      ? undefined
-                      : {
-                          aspectRatio: "4:3",
-                          type: "fill",
-                          gravity: "auto", // default
-                        },
+                  crop: {
+                    ...prev?.crop,
+                    aspectRatio:
+                      prev?.crop?.aspectRatio === "4:3" ? undefined : "4:3",
+                    type: "fill",
+                  },
                 }));
               }}
             >
